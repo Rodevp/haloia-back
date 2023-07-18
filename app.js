@@ -16,13 +16,19 @@ const typeDefs = `#graphql
 
     type Query {
         preaches: [Preache]
+        findPreache(titlePreaches: String!): Preache
     }
 
 `;
 
 const resolvers = {
     Query: {
-        preaches: () => data
+        preaches: () => data,
+        findPreache: (root, args) => {
+            const { titlePreaches } = args
+            const preache = data?.find(p => p?.titlePreaches === titlePreaches)
+            return preache
+        }
     }
 }
 
