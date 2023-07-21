@@ -16,6 +16,7 @@ const typeDefs = `#graphql
 
     type VerseToday {
         verse: String
+        numberVerse: String
     }
 
     type Query {
@@ -25,7 +26,7 @@ const typeDefs = `#graphql
     }
 
     type Mutation {
-        setVerse(newVerse: String!): VerseToday
+        setVerse(newVerse: String!, numberVerse: String!): VerseToday
     }
 
 `;
@@ -46,10 +47,12 @@ const resolvers = {
     Mutation: {
         setVerse: (root, args) => { 
 
-            const { newVerse } = args
+            const { newVerse, numberVerse } = args
             const verse = readJSON('./verse.json')
             
             verse['verse'] = newVerse
+            verse['numberVerse'] = numberVerse
+
             writeJSON('./verse.json', verse)
             
             return readJSON('./verse.json')
@@ -64,7 +67,7 @@ const server = new ApolloServer({
 
 
 startStandaloneServer(server, {
-    listen: { port: 4000 }
+    listen: { port: 4200 }
 })
     .then(({ url }) => {
         console.log('server on port ', url)
