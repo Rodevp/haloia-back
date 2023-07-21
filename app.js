@@ -48,7 +48,6 @@ const resolvers = {
 
             const { newVerse } = args
             const verse = readJSON('./verse.json')
-            console.log('verso nuevo', newVerse, 'verso antiguo', verse['verse'])
             
             verse['verse'] = newVerse
             writeJSON('./verse.json', verse)
