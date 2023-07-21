@@ -1,7 +1,7 @@
 import { ApolloServer } from "@apollo/server"
 import { startStandaloneServer } from "@apollo/server/standalone"
 
-import { readJSON } from "./helpers.js"
+import { readJSON, writeJSON } from "./helpers.js"
 
 const data = readJSON('./preaches.json')
 
@@ -14,9 +14,18 @@ const typeDefs = `#graphql
         ytLink: String
     }
 
+    type VerseToday {
+        verse: String
+    }
+
     type Query {
+        verseToday: VerseToday
         preaches: [Preache]
         findPreache(titlePreaches: String!): Preache
+    }
+
+    type Mutation {
+        setVerse(newVerse: String!): VerseToday
     }
 
 `;
@@ -28,7 +37,24 @@ const resolvers = {
             const { titlePreaches } = args
             const preache = data?.find(p => p?.titlePreaches === titlePreaches)
             return preache
-        }
+        },
+        verseToday: () => {
+            const verse = readJSON('./verse.json')
+            return verse
+        } 
+    }, 
+    Mutation: {
+        setVerse: (root, args) => { 
+
+            const { newVerse } = args
+            const verse = readJSON('./verse.json')
+            console.log('verso nuevo', newVerse, 'verso antiguo', verse['verse'])
+            
+            verse['verse'] = newVerse
+            writeJSON('./verse.json', verse)
+            
+            return readJSON('./verse.json')
+        } 
     }
 }
 
